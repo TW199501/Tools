@@ -37,25 +37,25 @@ fi
 
 echo "🧩 NGINX modules path: $NGINX_MODULES_PATH"
 
-echo "[1/7] 建立工作目錄：$BUILD_DIR"
+echo "[1/9] 建立工作目錄：$BUILD_DIR"
 rm -rf "$BUILD_DIR"
 mkdir -p "$BUILD_DIR"
 cd "$BUILD_DIR"
 
-echo "[2/7] 安裝必要套件"
+echo "[2/9] 安裝必要套件"
 sudo apt update
 sudo apt install -y build-essential libpcre3 libpcre3-dev zlib1g zlib1g-dev libssl-dev wget unzip libmaxminddb-dev
 
-echo "[3/7] 下載 NGINX 原始碼 v$NGINX_VERSION"
+echo "[3/9] 下載 NGINX 原始碼 v$NGINX_VERSION"
 wget -q http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz
 tar -xf nginx-${NGINX_VERSION}.tar.gz
 
-echo "[4/7] 下載並解壓 ngx_http_geoip2_module"
+echo "[4/9] 下載並解壓 ngx_http_geoip2_module"
 wget -q -O ngx_http_geoip2_module.zip "$HTTP_ZIP_URL"
 unzip -q ngx_http_geoip2_module.zip
 mv ngx_http_geoip2_module-* "$HTTP_MODULE_DIR"
 
-echo "[5/7] 編譯 ngx_http_geoip2_module 為動態模組"
+echo "[5/9] 編譯 ngx_http_geoip2_module 為動態模組"
 cd "$NGINX_SRC_DIR"
 ./configure --with-compat --add-dynamic-module="$HTTP_MODULE_DIR"
 make modules
@@ -66,12 +66,12 @@ sudo mkdir -p "$NGINX_MODULES_PATH"
 echo "📦 安裝模組到：$NGINX_MODULES_PATH"
 sudo cp objs/ngx_http_geoip2_module.so "$NGINX_MODULES_PATH/"
 
-echo "[6/7] 下載 GeoLite2-Country.mmdb 至 $GEOIP_DB_PATH"
+echo "[6/9] 下載 GeoLite2-Country.mmdb 至 $GEOIP_DB_PATH"
 sudo mkdir -p /etc/nginx
 sudo wget -q -O "$GEOIP_DB_PATH" "$GEOIP_DB_URL"
 [ -f "$GEOIP_DB_PATH" ] && echo "✅ GeoIP2 資料庫已下載" || echo "❌ GeoIP2 資料庫下載失敗"
 
-echo "[7/8] 凍結 nginx 套件版本，避免未來 apt 升級導致 geoip2 模組失效..."
+echo "[7/9] 凍結 nginx 套件版本，避免未來 apt 升級導致 geoip2 模組失效..."
 sudo apt-mark hold nginx nginx-core nginx-common
 
 echo "[8/9]"
